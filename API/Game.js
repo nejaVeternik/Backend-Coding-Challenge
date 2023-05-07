@@ -1,15 +1,12 @@
-//import { sequelize } from '../../db.js';
 import { Model, DataTypes } from 'sequelize';
-
-//const { Model } = require('sequelize');
-
 import { sequelize } from '../db.js';
 
 export class Game extends Model {}
 
 Game.init({
     UUID: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true
     },
@@ -22,5 +19,6 @@ Game.init({
     }
 }, {
     sequelize, 
-    modelName: 'Game'
+    modelName: 'Game',
+    timestamps: false
 })
