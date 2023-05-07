@@ -1,11 +1,18 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { Game } from './API/Game.js';
-import { Player } from './API/Player.js';
-import BodyParser from 'body-parser';
 import { sequelize } from './db.js';
+import gamesAPI from './api/gamesAPI.js';
+
+import pkg from 'body-parser';
+const { json, urlencoded } = pkg;
 
 const app = express();
+
+app.use(json());
+
+app.use(urlencoded({ extended: true }));
+
+app.use('/games', gamesAPI);
 
 //sequelize.sync().then(() => console.log('db is ready'));
 
@@ -16,7 +23,7 @@ try {
     console.error('Unable to connect to the database:', error);
 }
 
-app.use(BodyParser.json());
+//app.use(BodyParser.json());
 
 //syncing sequelize with database
 sequelize.sync().then().catch((err) => {
@@ -25,19 +32,6 @@ sequelize.sync().then().catch((err) => {
 
 app.get('/', (req, res) => {
     res.send(uuidv4());
-});
-
-app.post('/game', (req, res) => {
-    //Game.sync();
-    Game.create(req.body).then(() => {
-        res.send('game is inserted');
-    })
-});
-
-app.post('/player', (req, res) => {
-    Player.create(req.body).then(() => {
-        res.send('player is inserted');
-    })
 });
 
 app.listen(3000, () => {

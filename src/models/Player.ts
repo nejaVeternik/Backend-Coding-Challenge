@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 
-export class Player extends Model {}
+class Player extends Model {}
 
 Player.init({
     UUID: {
@@ -35,4 +35,6 @@ Player.init({
     sequelize, 
     modelName: 'Player',
     timestamps: false
-})
+});
+
+export default Player;
