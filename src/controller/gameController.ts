@@ -1,34 +1,54 @@
 import { RequestHandler } from "express";
 import { Game } from '../models/Game.js';
-import express from 'express';
-import BodyParser from 'body-parser';
 
-const app = express();
 
-app.use(express.json());
+export const getAllGames: RequestHandler = async (req, res, next) => {
+    const allGames: Game[] = await Game.findAll();
+    return res.status(200).json({data: allGames});    
+}
 
-export const createGame: RequestHandler = async (req, res, next) => {
-    console.log(req.body);
-    let game = await Game.create(req.body);
-    return res
-        .status(200)
-        .json({ message: 'Game created successfully', data: game});
-};
+export const getGameById: RequestHandler = async (req, res, next) => {
+    const { id } = req.params;
+    //console.log(id);
+    const game: Game | null = await Game.findByPk(id);
 
-//import { Game } from '../models/Game';
-
-/*const create = async (req, res) => {
-    try {
-        const { title, description } = req.body;
-
-        const game = await Game.create(req.body)
-
-        res.status(201).json({
-            status: 'success'
-        })
-    } catch (err: str) {
-        return err.name;
+    if (game) {
+        return res.status(200).json({data: game});   
+    } else {
+        return res.status(404).json({message: 'Game not found'});
     }
 }
 
-export { create }*/
+export const createGame: RequestHandler = async (req, res, next) => {
+    //console.log(req.body);
+    let game = await Game.create(req.body);
+    return res.status(200).json({data: game});
+};
+
+export const updateGame: RequestHandler = async (req, res, next) => {
+    const { id } = req.params;
+    //console.log(id);
+    const game: Game | null = await Game.findByPk(id);
+
+    if (game) {
+        await Game.update(
+            { ...req.body }, 
+            { where: { uuid: id}  });
+        return res.status(200).json({data: game});
+    } else {
+        return res.status(404).json({message: 'Game not found'});
+    }
+};
+
+export const deleteGame: RequestHandler = async (req, res, next) => {
+    const { id } = req.params;
+
+    const game: Game | null = await Game.findByPk(id);
+
+    if (game) {
+        await Game.destroy({ where: { uuid: id }});
+        return res.status(200).json({data: game });
+    } else {
+        return res.status(404).json({message: 'Game not found'});   
+    }
+  };

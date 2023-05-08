@@ -6,7 +6,7 @@ import { sequelize } from "../db.js";
     tableName: 'games'
 })
 
-export class Game extends Model {
+export class Game extends Model<Game> {
     @Column({
         type: DataType.UUID,
         defaultValue: DataType.UUIDV4,
@@ -26,29 +26,3 @@ export class Game extends Model {
     })
     description!: string;
 }
-
-
-
-/*class Game extends Model {}
-
-Game.init({
-    UUID: {
-        type: DataType.UUID,
-        defaultValue: DataType.UUIDV4,
-        allowNull: false,
-        primaryKey: true
-    },
-    title: {
-        type: DataType.STRING,
-        allowNull: false
-    },
-    description: {
-        type: DataType.TEXT
-    }
-}, {
-    sequelize, 
-    modelName: 'Game',
-    timestamps: false
-})
-
-export { Game };*/

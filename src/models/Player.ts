@@ -1,7 +1,51 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db.js';
+import { Table, Model, Column, DataType } from "sequelize-typescript";
 
-class Player extends Model {}
+@Table({
+    timestamps: false,
+    tableName: 'players'
+})
+
+export class Player extends Model<Player> {
+    @Column({
+        type: DataType.UUID,
+        defaultValue: DataType.UUIDV4,
+        allowNull: false,
+        primaryKey: true   
+    })
+    uuid!: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
+    username!: string;
+
+    @Column({
+        type: DataType.TEXT,
+        allowNull: false
+    })
+    firstName!: string;
+
+    @Column({
+        type: DataType.TEXT,
+        allowNull: false
+    })
+    lastName!: string;
+
+    @Column({
+        type: DataType.TEXT,
+        allowNull: false
+    })
+    email!: string;
+
+    @Column({
+        type: DataType.FLOAT,
+        defaultValue: 0
+    })
+    balance!: number;
+}
+
+/*class Player extends Model {}
 
 Player.init({
     UUID: {
@@ -37,4 +81,4 @@ Player.init({
     timestamps: false
 });
 
-export default Player;
+export default Player;*/

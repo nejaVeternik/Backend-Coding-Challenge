@@ -2,7 +2,7 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { sequelize } from './db.js';
 import gamesAPI from './api/gamesAPI.js';
-
+import playersAPI from './api/playersAPI.js';
 import pkg from 'body-parser';
 const { json, urlencoded } = pkg;
 
@@ -13,6 +13,8 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 app.use('/games', gamesAPI);
+
+app.use('/players', playersAPI);
 
 //sequelize.sync().then(() => console.log('db is ready'));
 
