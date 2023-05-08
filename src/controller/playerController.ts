@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { Player } from '../models/Player.js';
 import express from 'express';
+import { Op } from 'sequelize';
 
 const app = express();
 
@@ -15,11 +16,21 @@ export const createPlayer: RequestHandler = async (req, res) => {
 };
 
 export const getAllPlayers: RequestHandler = async (req, res) => {
-    const limitParam: number = Number(req.query.limit);
-    const offsetParam: number = Number(req.query.offset);
+    const limitParam: number = Number(req.query.limit) || 10;
+    const offsetParam: number = Number(req.query.offset) || 0;
+    const search: string = String(req.query.search);
 
-    const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
-    return res.status(200).json({data: allPlayers});    
+    if (search != 'undefined') {
+        const allPlayers: Object = await Player.findAndCountAll({
+            where: {username: {[Op.like]: '%' + search + '%'}},
+            limit: limitParam, 
+            offset: offsetParam
+        });
+        return res.status(200).json({data: allPlayers});
+    } else {
+            const allGames: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
+            return res.status(200).json({data: allGames});
+    }
 }
 
 export const getPlayerById: RequestHandler = async (req, res) => {
