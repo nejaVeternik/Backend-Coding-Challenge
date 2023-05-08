@@ -2,6 +2,8 @@ import { RequestHandler } from "express";
 import { Player } from '../models/Player.js';
 import express from 'express';
 import { Op } from 'sequelize';
+import { GamePlayer } from "../models/GamePlayer.js";
+import { Game } from "../models/Game.js";
 
 const app = express();
 
@@ -28,8 +30,8 @@ export const getAllPlayers: RequestHandler = async (req, res) => {
         });
         return res.status(200).json({data: allPlayers});
     } else {
-            const allGames: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
-            return res.status(200).json({data: allGames});
+            const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
+            return res.status(200).json({data: allPlayers});
     }
 }
 
@@ -69,4 +71,35 @@ export const deletePlayer: RequestHandler = async (req, res) => {
     } else {
         return res.status(404).json({message: 'Player not found'});   
     }
-  };
+};
+
+
+export const getPlayerGames: RequestHandler = async (req, res) => {
+    /*const { id } = req.params;
+    const limitParam: number = Number(req.query.limit) || 10;
+    const offsetParam: number = Number(req.query.offset) || 0;
+
+    const games = await GamePlayer.findAndCountAll({
+            limit: limitParam, 
+            offset: offsetParam,
+            where: { playerUuid: id}
+        });
+
+    console.log(JSON.stringify(games));
+
+    return res.status(200).json({data: games});*/
+
+    const limitParam: number = Number(req.query.limit) || 10;
+    const offsetParam: number = Number(req.query.offset) || 0;
+    const { id } = req.params;
+    const player: Player | null = await Player.findByPk(id, 
+        {include: Game,
+        limit: limitParam, 
+        offset: offsetParam});
+
+    if (player) {
+        return res.status(200).json({data: player, include: Game});   
+    } else {
+        return res.status(404).json({message: 'Player not found'});
+    }
+}

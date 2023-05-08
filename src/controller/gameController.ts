@@ -1,8 +1,15 @@
 import { RequestHandler} from "express";
 import { Game } from '../models/Game.js';
 import { Op } from 'sequelize';
+import { GamePlayer } from "../models/GamePlayer.js";
+import { Player } from "../models/Player.js";
 
 
+export const createPlay: RequestHandler = async (req, res) => {
+    let play = await GamePlayer.create(req.body);
+    return res.status(200).json({data: play});
+}
+ 
 export const getAllGames: RequestHandler = async (req, res) => {
     const limitParam: number = Number(req.query.limit) || 10;
     const offsetParam: number = Number(req.query.offset) || 0;

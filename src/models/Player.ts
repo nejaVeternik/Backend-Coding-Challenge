@@ -1,4 +1,16 @@
-import { Table, Model, Column, DataType } from "sequelize-typescript";
+import { Table, Model, Column, DataType, Scopes, BelongsToMany } from "sequelize-typescript";
+import { Game } from "./Game.js";
+import { GamePlayer } from "./GamePlayer.js";
+
+
+@Scopes(() => ({
+    games: {
+        include: [{
+            model: Game,
+            through: {attributes: []}
+        }]
+    }
+}))
 
 @Table({
     timestamps: false,
@@ -43,6 +55,9 @@ export class Player extends Model<Player> {
         defaultValue: 0
     })
     balance!: number;
+
+    @BelongsToMany(() => Game, () => GamePlayer)
+    games?: Game[];
 }
 
 /*class Player extends Model {}

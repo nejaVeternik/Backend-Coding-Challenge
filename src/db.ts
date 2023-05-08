@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Game } from './models/Game.js';
 import { Player } from './models/Player.js';
+import { GamePlayer } from './models/GamePlayer.js';
 
 export const sequelize = new Sequelize({
     database: 'casino',
@@ -8,7 +9,7 @@ export const sequelize = new Sequelize({
     username: 'username',
     password: 'pwd',
     host: './casino.sqlite',
-    models: [Game, Player]
+    models: [Game, Player, GamePlayer]
 });
 
 
