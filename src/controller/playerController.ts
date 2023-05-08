@@ -15,7 +15,10 @@ export const createPlayer: RequestHandler = async (req, res) => {
 };
 
 export const getAllPlayers: RequestHandler = async (req, res) => {
-    const allPlayers: Player[] = await Player.findAll();
+    const limitParam: number = Number(req.query.limit);
+    const offsetParam: number = Number(req.query.offset);
+
+    const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
     return res.status(200).json({data: allPlayers});    
 }
 

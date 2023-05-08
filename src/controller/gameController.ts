@@ -3,8 +3,11 @@ import { Game } from '../models/Game.js';
 
 
 export const getAllGames: RequestHandler = async (req, res) => {
-    const allGames: Game[] = await Game.findAll();
-    return res.status(200).json({data: allGames});    
+    const limitParam: number = Number(req.query.limit);
+    const offsetParam: number = Number(req.query.offset);
+
+    const allGames: Object = await Game.findAndCountAll({limit: limitParam, offset: offsetParam});
+    return res.status(200).json({data: allGames});
 }
 
 export const getGameById: RequestHandler = async (req, res) => {
@@ -51,4 +54,4 @@ export const deleteGame: RequestHandler = async (req, res) => {
     } else {
         return res.status(404).json({message: 'Game not found'});   
     }
-  };
+};
