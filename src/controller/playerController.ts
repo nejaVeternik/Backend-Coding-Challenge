@@ -10,11 +10,12 @@ const app = express();
 app.use(express.json());
 
 export const createPlayer: RequestHandler = async (req, res) => {
-    console.log(req.body);
-    let player = await Player.create(req.body);
-    return res
-        .status(200)
-        .json({ message: 'Player created successfully', data: player});
+    try {
+        let player = await Player.create(req.body);
+        return res.status(200).json({ message: 'Player created successfully', data: player});
+    } catch (err) {
+        return res.status(500).json({ err });
+    }
 };
 
 export const getAllPlayers: RequestHandler = async (req, res) => {
@@ -30,7 +31,7 @@ export const getAllPlayers: RequestHandler = async (req, res) => {
         });
         return res.status(200).json({data: allPlayers});
     } else {
-            const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam, include: Game});
+            const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
             return res.status(200).json({data: allPlayers});
     }
 }
@@ -50,13 +51,17 @@ export const updatePlayer: RequestHandler = async (req, res) => {
     const { id } = req.params;
     const player: Player | null = await Player.findByPk(id);
 
-    if (player) {
+    try {
+        if (player) {
         await Player.update(
             { ...req.body }, 
-            { where: { uuid: id}  });
-        return res.status(200).json({data: player});
+            { where: { uuid: id} });
+        return res.status(200).json({message: 'Player updated successfully'});
     } else {
         return res.status(404).json({message: 'Player not found'});
+    }
+    } catch (err) {
+        return res.status(500).json({ err });
     }
 };
 
@@ -67,7 +72,7 @@ export const deletePlayer: RequestHandler = async (req, res) => {
 
     if (player) {
         await Player.destroy({ where: { uuid: id }});
-        return res.status(200).json({data: player });
+        return res.status(200).json({message: 'Player deleted successfully' });
     } else {
         return res.status(404).json({message: 'Player not found'});   
     }

@@ -29,7 +29,8 @@ export class Game extends Model<Game> {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     })
     title!: string;
 

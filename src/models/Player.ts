@@ -1,6 +1,7 @@
 import { Table, Model, Column, DataType, Scopes, BelongsToMany } from "sequelize-typescript";
 import { Game } from "./Game.js";
 import { GamePlayer } from "./GamePlayer.js";
+import { validate } from "uuid";
 
 
 @Scopes(() => ({
@@ -28,7 +29,9 @@ export class Player extends Model<Player> {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: {isAlphanumeric: true}
     })
     username!: string;
 
@@ -46,7 +49,9 @@ export class Player extends Model<Player> {
 
     @Column({
         type: DataType.TEXT,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: {isEmail: true}
     })
     email!: string;
 
