@@ -30,7 +30,7 @@ export const getAllPlayers: RequestHandler = async (req, res) => {
         });
         return res.status(200).json({data: allPlayers});
     } else {
-            const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam});
+            const allPlayers: Object = await Player.findAndCountAll({limit: limitParam, offset: offsetParam, include: Game});
             return res.status(200).json({data: allPlayers});
     }
 }
@@ -75,30 +75,37 @@ export const deletePlayer: RequestHandler = async (req, res) => {
 
 
 export const getPlayerGames: RequestHandler = async (req, res) => {
-    /*const { id } = req.params;
-    const limitParam: number = Number(req.query.limit) || 10;
-    const offsetParam: number = Number(req.query.offset) || 0;
-
-    const games = await GamePlayer.findAndCountAll({
-            limit: limitParam, 
-            offset: offsetParam,
-            where: { playerUuid: id}
-        });
-
-    console.log(JSON.stringify(games));
-
-    return res.status(200).json({data: games});*/
-
     const limitParam: number = Number(req.query.limit) || 10;
     const offsetParam: number = Number(req.query.offset) || 0;
     const { id } = req.params;
-    const player: Player | null = await Player.findByPk(id, 
-        {include: Game,
-        limit: limitParam, 
-        offset: offsetParam});
 
+    let gamesList: Game[] = [];
+
+    let games: GamePlayer[] = await GamePlayer.findAll({
+        where: {playerUuid: id}
+    });
+
+    for (let game of games) {
+        let gameId: string = game.dataValues.gameUuid
+
+        const fetchedGame: Game | null = await Game.findByPk(gameId);  
+        if (fetchedGame) {
+            gamesList.push(fetchedGame);
+        }
+    }
+
+    let listLenght: number = gamesList.length;
+
+    if (listLenght > limitParam) {
+        gamesList = gamesList.slice(offsetParam, offsetParam + limitParam);
+    } else {
+        gamesList = gamesList.slice(offsetParam);
+    }
+
+    const player: Player | null = await Player.findByPk(id);
+    
     if (player) {
-        return res.status(200).json({data: player, include: Game});   
+        return res.status(200).json({data: gamesList});   
     } else {
         return res.status(404).json({message: 'Player not found'});
     }

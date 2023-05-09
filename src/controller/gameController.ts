@@ -15,8 +15,6 @@ export const getAllGames: RequestHandler = async (req, res) => {
     const offsetParam: number = Number(req.query.offset) || 0;
     const search: string = String(req.query.search);
 
-    //console.log(search);
-
     if (search != 'undefined') {
         const allGames: Object = await Game.findAndCountAll({
             where: {title: {[Op.like]: '%' + search + '%'}},
@@ -32,7 +30,7 @@ export const getAllGames: RequestHandler = async (req, res) => {
 
 export const getGameById: RequestHandler = async (req, res) => {
     const { id } = req.params;
-    //console.log(id);
+
     const game: Game | null = await Game.findByPk(id);
 
     if (game) {

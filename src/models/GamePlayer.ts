@@ -8,13 +8,13 @@ import { Game } from "./Game.js";
 })
 
 export class GamePlayer extends Model<GamePlayer> {
-    @Column({
+    /*@Column({
         type: DataType.UUID,
         defaultValue: DataType.UUIDV4,
         allowNull: false,
         primaryKey: true
     })
-    uuid!: string;
+    uuid!: string;*/
 
     @ForeignKey(() => Player)
     @Column
